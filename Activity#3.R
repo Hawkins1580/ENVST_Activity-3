@@ -12,6 +12,8 @@ Annual_CO2 <- read.csv("/cloud/project/activity03/annual-co-emissions-by-region.
 # loading packages
 # install.packages(c("dplyr", "ggplot2"))
 # install.packages("lubridate")
+# install.packages("scales")
+library("scales")
 library(dplyr)
 library(ggplot2)
 library(lubridate)
@@ -75,9 +77,33 @@ North_America <- datCO2[datCO2$Entity == "United States" |
                    datCO2$Entity == "Canada" |
                    datCO2$Entity == "Mexico", ]
 
-ggplot(data = NorthA, # data for plot
-       aes(x = Year, y=CO2, color=Entity ) )+ # aes, x and y
+ggplot(data = North_America, # data for plot
+       aes(x = Year, y=Annual_CO2, color=Entity ) )+ # aes, x and y
   geom_point()+ # make points at data point
   geom_line()+ # use lines to connect data points
-  labs(x="Year", y="US fossil fuel emissions (tons CO2)")+ # make axis labels
+  labs(x="Year", y="CO2 Emissions (in tons)")+ # make axis labels
   theme_classic()
+
+
+
+# Start of Homework 
+# Make a graph that communicates about emissions from any countries of your choice
+
+
+Five_High_Emittors <- datCO2[datCO2$Entity == "United States" |
+                          datCO2$Entity == "China" |
+                          datCO2$Entity == "Russia" |
+                          datCO2$Entity == "Japan" |
+                          datCO2$Entity == "India", ]
+
+# Making plot
+ggplot(data = Five_High_Emittors, # data for plot
+       aes(x = Year, y=Annual_CO2, color=Entity ) )+ # aes, x and y
+  geom_line()+
+  scale_y_continuous(labels = label_number(scale = 1/1000000000))+
+  labs(x="Year", y="CO2 Emissions (in billions of tons)")+ # make axis labels
+  theme_classic()
+
+
+
+
