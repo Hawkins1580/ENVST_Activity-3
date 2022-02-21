@@ -89,7 +89,7 @@ ggplot(data = North_America, # data for plot
 # Start of Homework 
 # Make a graph that communicates about emissions from any countries of your choice
 
-
+# Question #1
 Five_High_Emittors <- datCO2[datCO2$Entity == "United States" |
                           datCO2$Entity == "China" |
                           datCO2$Entity == "Russia" |
@@ -100,10 +100,28 @@ Five_High_Emittors <- datCO2[datCO2$Entity == "United States" |
 ggplot(data = Five_High_Emittors, # data for plot
        aes(x = Year, y=Annual_CO2, color=Entity ) )+ # aes, x and y
   geom_line()+
-  scale_y_continuous(labels = label_number(scale = 1/1000000000))+
+  scale_y_continuous(labels = label_number(scale = 1/1000000000, accuracy = 1))+
   labs(x="Year", y="CO2 Emissions (in billions of tons)")+ # make axis labels
+  ggtitle("The Worlds Top 5 CO2 Emittors:", subtitle = "Will China Ever Reverse its Trend?")+
   theme_classic()
 
 
+# Question #2
+# Plot world CO2 emissions on one graph 
+ggplot(data = datCO2, # data for plot
+       aes(x = Year, y=Annual_CO2))+ # aes, x and y
+  geom_line(aes(color="tomato3"))+
+  scale_y_continuous(labels = label_number(scale = 1/1000000000, accuracy = 1))+
+  labs(x="Year", y="CO2 Emissions (in billions of tons)")+ # make axis labels
+  ggtitle("Total World CO2 Emissions")+
+  theme_classic()
 
+
+# Plot world air temperature anomalies on the other graph.
+ggplot(data = Climate_Change[Climate_Change$Entity == "World",], aes(x = Day, 
+                                                                     y = temperature_anomaly, 
+                                                                     color = Entity))+
+  geom_line()+
+  labs(x="Year", y="Temperature Anomaly (in Celcuis)")+
+  theme_classic()
 
