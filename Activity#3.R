@@ -99,10 +99,10 @@ Five_High_Emittors <- datCO2[datCO2$Entity == "United States" |
 # Making plot
 ggplot(data = Five_High_Emittors, # data for plot
        aes(x = Year, y=Annual_CO2, color=Entity ) )+ # aes, x and y
-  geom_line()+
+  geom_line(size = 0.75)+
   scale_y_continuous(labels = label_number(scale = 1/1000000000, accuracy = 1))+
   labs(x="Year", y="CO2 Emissions (in billions of tons)")+ # make axis labels
-  ggtitle("The Worlds Top 5 CO2 Emittors:", subtitle = "Will China Ever Reverse its Trend?")+
+  ggtitle("The Worlds Top 5 CO2 Emittors:", subtitle = "Will China Ever Reverse its Emissions Trend?")+
   theme_classic()
 
 
@@ -110,7 +110,8 @@ ggplot(data = Five_High_Emittors, # data for plot
 # Plot world CO2 emissions on one graph 
 ggplot(data = datCO2, # data for plot
        aes(x = Year, y=Annual_CO2))+ # aes, x and y
-  geom_line(aes(color="tomato3"))+
+  geom_line(aes(color="tomato3"),
+            show.legend = FALSE)+
   scale_y_continuous(labels = label_number(scale = 1/1000000000, accuracy = 1))+
   labs(x="Year", y="CO2 Emissions (in billions of tons)")+ # make axis labels
   ggtitle("Total World CO2 Emissions")+
@@ -118,10 +119,57 @@ ggplot(data = datCO2, # data for plot
 
 
 # Plot world air temperature anomalies on the other graph.
-ggplot(data = Climate_Change[Climate_Change$Entity == "World",], aes(x = Day, 
-                                                                     y = temperature_anomaly, 
-                                                                     color = Entity))+
-  geom_line()+
-  labs(x="Year", y="Temperature Anomaly (in Celcuis)")+
+ggplot(data = Climate_Change[Climate_Change$Entity == "World",], 
+       aes(x = Day,
+           y = temperature_anomaly))+
+  geom_line(aes(color="red4"),
+            show.legend = FALSE)+
+  geom_hline(yintercept=0, linetype="dashed", 
+             color = "black", size=1)+
+  ggtitle("World Air Temperature Anomalies")+
+  labs(x="Year", y="Temperature Anomaly (in Celcuis)")+ # make axis labels
   theme_classic()
+
+
+
+
+
+# Question #3 - Graph from Our World Data
+
+# Reading in Data
+Energy_Source <- read.csv("/cloud/project/Energy_Source.csv")
+
+# Creating United States Dataframe
+US_Energy <- Energy_Source[Energy_Source$Entity == "United States",]
+
+# Renaming columns
+colnames(US_Energy)
+colnames(US_Energy)[4] <- "Wind"
+colnames(US_Energy)[5] <- "Hydro"
+colnames(US_Energy)[6] <- "Solar"
+colnames(US_Energy)[7] <- "Nuclear"
+colnames(US_Energy)[8] <- "Biofuels"
+colnames(US_Energy)[9] <- "Geothermal, Biomass, Other"
+colnames(US_Energy)[10] <- "Coal"
+colnames(US_Energy)[11] <- "Oil"
+colnames(US_Energy)[12] <- "Gas"
+
+# install.packages("reshape2")
+library("reshape2")
+
+US_Energy = subset(US_Energy, select = -c(Entity,Code) )
+LONG_US_Energy <- melt(US_Energy, id="Year")
+
+ggplot(data = LONG_US_Energy, # data for plot
+       aes(x = Year,
+           y = value,
+           color = variable))+
+  geom_line()+
+  labs(x="Year", y="Energy Consumption (in thousands of TWh)")+ # make axis labels
+  ggtitle("United States Energy Consumption:", 
+          subtitle = "Are Fossil Fuels Fading Away?")+
+  theme_classic()
+
+
+
 
