@@ -18,6 +18,10 @@ library(dplyr)
 library(ggplot2)
 library(lubridate)
 
+# Downloading package for labelling lines 
+# install.packages("ggrepel")
+library("ggrepel")
+
 
 # Prompt #1
 # Make a plot of air temperature anomalies in the Northern and Southern Hemisphere in base R and in ggplot2.
@@ -77,6 +81,7 @@ North_America <- datCO2[datCO2$Entity == "United States" |
                    datCO2$Entity == "Canada" |
                    datCO2$Entity == "Mexico", ]
 
+# Labeling lines
 ggplot(data = North_America, # data for plot
        aes(x = Year, y=Annual_CO2, color=Entity ) )+ # aes, x and y
   geom_point()+ # make points at data point
@@ -97,15 +102,28 @@ Five_High_Emittors <- datCO2[datCO2$Entity == "United States" |
                           datCO2$Entity == "India", ]
 
 # Making plot
-ggplot(data = Five_High_Emittors, # data for plot
+FIRST_Graph <- ggplot(data = Five_High_Emittors, # data for plot
        aes(x = Year, y=Annual_CO2, color=Entity ) )+ # aes, x and y
   geom_line(size = 0.75)+
   scale_y_continuous(labels = label_number(scale = 1/1000000000, accuracy = 1))+
   labs(x="Year", y="CO2 Emissions (in billions of tons)")+ # make axis labels
   ggtitle("The Worlds Top 5 CO2 Emittors:", subtitle = "Will China Ever Reverse its Emissions Trend?")+
   theme_classic()
+FIRST_Graph
 
+# Creating second last year variable to attach label to 
+FINAL_Year <- max(Five_High_Emittors$Year[Five_High_Emittors$Year == max(Five_High_Emittors$Year)])
 
+# Graph with labels on each line
+FIRST_Graph + 
+  geom_label_repel(data = filter(Five_High_Emittors, Year == Last_Year),
+                   aes(label = Entity),
+                   nudge_x = .75,
+                   na.rm = TRUE) + 
+  theme(legend.position = "none")
+  
+  
+  
 # Question #2
 # Plot world CO2 emissions on one graph 
 ggplot(data = datCO2, # data for plot
@@ -122,7 +140,7 @@ ggplot(data = datCO2, # data for plot
 ggplot(data = Climate_Change[Climate_Change$Entity == "World",], 
        aes(x = Day,
            y = temperature_anomaly))+
-  geom_line(aes(color="red4"),
+  geom_line(aes(color="tomato3"),
             show.legend = FALSE)+
   geom_hline(yintercept=0, linetype="dashed", 
              color = "black", size=1)+
@@ -157,35 +175,39 @@ colnames(US_Energy)[12] <- "Gas"
 # install.packages("reshape2")
 library("reshape2")
 
-US_Energy = subset(US_Energy, select = -c(Entity,Code) )
-LONG_US_Energy <- melt(US_Energy, id="Year")
-
+US_Energy = subset(US_Energy, select = -c(Entity,Code)) # Deleting entity and code columns
+LONG_US_Energy <- melt(US_Energy, id="Year") # sorting each energy sector by year
+LABEL_Data <- LONG_US_Energy # duplicating dataframe to try and add labels 
+colnames(LABEL_Data)[2] <- "Energy_Source"
 
 
 GRAPH <- ggplot(data = LABEL_Data, # data for plot
        aes(x = Year,
            y = value,
-           color = variable))+
+           color = Energy_Source))+
   geom_line()+
+  scale_y_continuous(labels = comma)+ 
   labs(x="Year", y="Energy Consumption (in thousands of TWh)")+ # make axis labels
   ggtitle("United States Energy Consumption:", 
           subtitle = "Are Fossil Fuels Fading Away?")+
   theme_classic()
 GRAPH
 
+
 # Adding labels to each line
 
-SecondLast_Year <- max(LABEL_Data$Year[LABEL_Data$Year != max(LABEL_Data$Year)])
+# Creating second last year variable to attach label to 
+Last_Year <- max(LABEL_Data$Year[LABEL_Data$Year == max(LABEL_Data$Year)])
 
+# Graph with labels on each line
 GRAPH + 
-  geom_label_repel(data = filter(LABEL_Data, Year == SecondLast_Year),
-                   aes(label = variable),
+  geom_label_repel(data = filter(LABEL_Data, Year == Last_Year),
+                   aes(label = Energy_Source),
                    nudge_x = .75,
                    na.rm = TRUE) + 
-  theme(legend.position = "none")
+  theme(legend.position = "none") 
 
-# install.packages("ggrepel")
-library("ggrepel")
+
 
 
 
