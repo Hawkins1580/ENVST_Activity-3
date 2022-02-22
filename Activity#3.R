@@ -160,7 +160,9 @@ library("reshape2")
 US_Energy = subset(US_Energy, select = -c(Entity,Code) )
 LONG_US_Energy <- melt(US_Energy, id="Year")
 
-ggplot(data = LONG_US_Energy, # data for plot
+
+
+GRAPH <- ggplot(data = LABEL_Data, # data for plot
        aes(x = Year,
            y = value,
            color = variable))+
@@ -169,7 +171,21 @@ ggplot(data = LONG_US_Energy, # data for plot
   ggtitle("United States Energy Consumption:", 
           subtitle = "Are Fossil Fuels Fading Away?")+
   theme_classic()
+GRAPH
 
+# Adding labels to each line
+
+SecondLast_Year <- max(LABEL_Data$Year[LABEL_Data$Year != max(LABEL_Data$Year)])
+
+GRAPH + 
+  geom_label_repel(data = filter(LABEL_Data, Year == SecondLast_Year),
+                   aes(label = variable),
+                   nudge_x = .75,
+                   na.rm = TRUE) + 
+  theme(legend.position = "none")
+
+# install.packages("ggrepel")
+library("ggrepel")
 
 
 
