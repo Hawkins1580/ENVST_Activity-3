@@ -104,7 +104,13 @@ Five_High_Emittors <- datCO2[datCO2$Entity == "United States" |
 # Making plot
 FIRST_Graph <- ggplot(data = Five_High_Emittors, # data for plot
        aes(x = Year, y=Annual_CO2, color=Entity ) )+ # aes, x and y
-  geom_line(size = 0.75)+
+  geom_line(size = .5)+
+  scale_color_manual(values = c("yellow3", # China
+                                "olivedrab3", # India
+                                "red2", # Japan
+                                "brown4", # Russia
+                                "dodgerblue3"))+ # United States
+  xlim(1850,2020)+
   scale_y_continuous(labels = label_number(scale = 1/1000000000, accuracy = 1))+
   labs(x="Year", y="CO2 Emissions (in billions of tons)")+ # make axis labels
   ggtitle("The Worlds Top 5 CO2 Emittors:", subtitle = "Will China Ever Reverse its Emissions Trend?")+
@@ -127,12 +133,13 @@ FIRST_Graph +
 # Question #2
 # Plot world CO2 emissions on one graph 
 ggplot(data = datCO2, # data for plot
-       aes(x = Year, y=Annual_CO2))+ # aes, x and y
-  geom_line(aes(color="tomato3"),
-            show.legend = FALSE)+
-  scale_y_continuous(labels = label_number(scale = 1/1000000000, accuracy = 1))+
+       aes(x = Year, y=Annual_CO2, ))+ # aes, x and y
+  geom_line(color = "brown3")+
+  xlim(1850, 2020)+
+  scale_y_continuous(labels = label_number(scale = 1/1000000000, accuracy = 1))+ # scaling down y-axis
   labs(x="Year", y="CO2 Emissions (in billions of tons)")+ # make axis labels
-  ggtitle("Total World CO2 Emissions")+
+  ggtitle("Total World CO2 Emissions:",
+          subtitle = "A Drastic Increase Since the Industrial Revolution")+
   theme_classic()
 
 
@@ -140,11 +147,11 @@ ggplot(data = datCO2, # data for plot
 ggplot(data = Climate_Change[Climate_Change$Entity == "World",], 
        aes(x = Day,
            y = temperature_anomaly))+
-  geom_line(aes(color="tomato3"),
-            show.legend = FALSE)+
+  geom_line(color = "orangered1")+
   geom_hline(yintercept=0, linetype="dashed", 
-             color = "black", size=1)+
-  ggtitle("World Air Temperature Anomalies")+
+             color = "black", size = .75)+
+  ggtitle("World Air Temperature Anomalies:",
+          subtitle = "Air Tempperatures are Diverging from Historical Averages")+
   labs(x="Year", y="Temperature Anomaly (in Celcuis)")+ # make axis labels
   theme_classic()
 
@@ -185,7 +192,16 @@ GRAPH <- ggplot(data = LABEL_Data, # data for plot
        aes(x = Year,
            y = value,
            color = Energy_Source))+
-  geom_line()+
+  scale_color_manual(values = c("cadetblue", # Wind
+                                "dodgerblue2", # Hydro
+                                "darkorange", # Solar
+                                "darkgoldenrod1", # Nuclear
+                                "darkolivegreen4", # Biofuels
+                                "darkseagreen", # Geo Bio Other
+                                "darkorchid4", # Coal
+                                "antiquewhite3", # Oil
+                                "dimgrey"))+# gas
+  geom_line(size = .75)+
   scale_y_continuous(labels = comma)+ 
   labs(x="Year", y="Energy Consumption (in thousands of TWh)")+ # make axis labels
   ggtitle("United States Energy Consumption:", 
